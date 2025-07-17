@@ -1,77 +1,141 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Orçamento Completo de Obra</title>
+  <title>Calculadora de Obra</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
+      font-family: sans-serif;
       background: #f0f0f0;
       padding: 20px;
-      max-width: 800px;
+      color: #333;
+      max-width: 900px;
       margin: auto;
     }
     h2 {
-      background: #222;
-      color: white;
+      background: #333;
+      color: #fff;
       padding: 10px;
-      border-radius: 5px;
+      border-radius: 8px;
     }
     .item {
       display: flex;
       gap: 10px;
-      margin-bottom: 8px;
+      margin: 8px 0;
     }
-    .item input {
-      flex: 1;
+    input {
       padding: 5px;
+      width: 100px;
     }
     .total {
       font-weight: bold;
-      font-size: 18px;
-      margin-top: 20px;
+    }
+    .sum {
+      background: #444;
+      color: #fff;
+      padding: 15px;
+      font-size: 20px;
+      margin-top: 30px;
+      border-radius: 8px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h1>Orçamento Completo de Obra</h1>
 
-  <h2>Parte Alicerce</h2>
-  <div class="item"><input placeholder="Concreto usinado (m²)"><input placeholder="Preço R$"></div>
-  <div class="item"><input placeholder="Areia (m³)"><input placeholder="Preço R$"></div>
-  <div class="item"><input placeholder="Brita (m³)"><input placeholder="Preço R$"></div>
-  <div class="item"><input placeholder="Cimento (sacos)"><input placeholder="Preço R$"></div>
-  <div class="item"><input placeholder="Ferro 10mm (kg)"><input placeholder="Preço R$"></div>
-  <div class="item"><input placeholder="Ferro estribo (kg)"><input placeholder="Preço R$"></div>
-  <div class="item"><input placeholder="Arame (kg)"><input placeholder="Preço R$"></div>
-  <div class="item"><input placeholder="Tábuas (m)" ><input placeholder="Preço R$"></div>
-  <div class="item"><input placeholder="Prego (kg)"><input placeholder="Preço R$"></div>
+  <h1>Orçamento Completo da Obra</h1>
 
-  <h2>Parte Pilar / Parede / Cinta</h2>
-  <div class="item"><input placeholder="Tijolo (milheiro)"><input placeholder="Preço R$"></div>
-  <div class="item"><input placeholder="Areia (m³)"><input placeholder="Preço R$"></div>
-  <div class="item"><input placeholder="Cimento (sacos)"><input placeholder="Preço R$"></div>
-  <div class="item"><input placeholder="Ferro 10mm (kg)"><input placeholder="Preço R$"></div>
-  <div class="item"><input placeholder="Ferro estribo (kg)"><input placeholder="Preço R$"></div>
-  <div class="item"><input placeholder="Mangueira elétrica (m)"><input placeholder="Preço R$"></div>
-  <div class="item"><input placeholder="Caixinha de energia"><input placeholder="Preço R$"></div>
-  <div class="item"><input placeholder="Caixa de distribuição"><input placeholder="Preço R$"></div>
+  <div id="app"></div>
 
-  <h2>Parte Laje</h2>
-  <div class="item"><input placeholder="Laje pré-fabricada (m²)"><input placeholder="Preço R$"></div>
+  <div class="sum">Total da Obra: R$ <span id="totalObra">0.00</span></div>
 
-  <h2>Parte Telhado</h2>
-  <div class="item"><input placeholder="Madeira (m)"><input placeholder="Preço R$"></div>
-  <div class="item"><input placeholder="Telha colonial (unid)"><input placeholder="Preço R$"></div>
+  <script>
+    const dados = {
+      "Parte Alicerce": [
+        "Concreto usinado", "Areia", "Brita", "Cimento",
+        "Ferro 10mm", "Ferro estrivo", "Arame", "Tábuas", "Prego"
+      ],
+      "Pilar / Parede / Cinta": [
+        "Tijolo", "Areia", "Cimento",
+        "Ferro 10mm", "Ferro estrivo",
+        "Mangueira", "Caixinha energia", "Caixa distribuição"
+      ],
+      "Parte Laje": [
+        "Pré-fabricada m²", "Isopor", "Ferragem da laje"
+      ],
+      "Parte Telhado": [
+        "Madeira", "Telha colonial"
+      ],
+      "Parte Gesseiro": [
+        "Gesso"
+      ],
+      "Parte Porcelanato": [
+        "Porcelanato", "Argamassa", "Rejunte"
+      ]
+    };
 
-  <h2>Parte Gesseiro</h2>
-  <div class="item"><input placeholder="Gesso (m²)"><input placeholder="Preço R$"></div>
+    const app = document.getElementById('app');
 
-  <h2>Parte Porcelanato</h2>
-  <div class="item"><input placeholder="Porcelanato (m²)"><input placeholder="Preço R$"></div>
-  <div class="item"><input placeholder="Argamassa (sacos)"><input placeholder="Preço R$"></div>
-  <div class="item"><input placeholder="Rejunte (kg)"><input placeholder="Preço R$"></div>
+    function criarCampo(nome) {
+      const div = document.createElement('div');
+      div.className = 'item';
 
-  <div class="total">Total geral: R$ <span id="total">0,00</span></div>
+      const label = document.createElement('label');
+      label.textContent = nome;
+      label.style.flex = '1';
+
+      const qtd = document.createElement('input');
+      qtd.type = 'number';
+      qtd.placeholder = 'Qtd';
+
+      const preco = document.createElement('input');
+      preco.type = 'number';
+      preco.placeholder = 'Preço';
+
+      const total = document.createElement('span');
+      total.className = 'total';
+      total.textContent = 'R$ 0.00';
+
+      function atualizar() {
+        const v1 = parseFloat(qtd.value) || 0;
+        const v2 = parseFloat(preco.value) || 0;
+        const t = v1 * v2;
+        total.textContent = 'R$ ' + t.toFixed(2);
+        calcularTotalGeral();
+      }
+
+      qtd.oninput = atualizar;
+      preco.oninput = atualizar;
+
+      div.appendChild(label);
+      div.appendChild(qtd);
+      div.appendChild(preco);
+      div.appendChild(total);
+
+      return div;
+    }
+
+    function calcularTotalGeral() {
+      const totais = document.querySelectorAll('.total');
+      let soma = 0;
+      totais.forEach(t => {
+        const valor = parseFloat(t.textContent.replace('R$', '').replace(',', '.')) || 0;
+        soma += valor;
+      });
+      document.getElementById('totalObra').textContent = soma.toFixed(2);
+    }
+
+    for (const bloco in dados) {
+      const h2 = document.createElement('h2');
+      h2.textContent = bloco;
+      app.appendChild(h2);
+
+      dados[bloco].forEach(item => {
+        app.appendChild(criarCampo(item));
+      });
+    }
+  </script>
+
 </body>
 </html>
