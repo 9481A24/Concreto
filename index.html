@@ -1,110 +1,77 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Simulador de Concreto</title>
+  <meta charset="UTF-8" />
+  <title>Orçamento Completo de Obra</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      max-width: 500px;
-      margin: auto;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f0f0;
       padding: 20px;
-      background: #f4f4f4;
-      border-radius: 10px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.15);
+      max-width: 800px;
+      margin: auto;
     }
-    label {
-      display: block;
-      margin-top: 10px;
-    }
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 4px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 12px;
-      background: #0077cc;
+    h2 {
+      background: #222;
       color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-    }
-    #resultado {
-      margin-top: 20px;
-      background: #e7ffe7;
       padding: 10px;
       border-radius: 5px;
-      border: 1px solid #8f8;
+    }
+    .item {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .item input {
+      flex: 1;
+      padding: 5px;
+    }
+    .total {
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
+  <h1>Orçamento Completo de Obra</h1>
 
-  <h2>🔧 Simulador de Concreto</h2>
+  <h2>Parte Alicerce</h2>
+  <div class="item"><input placeholder="Concreto usinado (m²)"><input placeholder="Preço R$"></div>
+  <div class="item"><input placeholder="Areia (m³)"><input placeholder="Preço R$"></div>
+  <div class="item"><input placeholder="Brita (m³)"><input placeholder="Preço R$"></div>
+  <div class="item"><input placeholder="Cimento (sacos)"><input placeholder="Preço R$"></div>
+  <div class="item"><input placeholder="Ferro 10mm (kg)"><input placeholder="Preço R$"></div>
+  <div class="item"><input placeholder="Ferro estribo (kg)"><input placeholder="Preço R$"></div>
+  <div class="item"><input placeholder="Arame (kg)"><input placeholder="Preço R$"></div>
+  <div class="item"><input placeholder="Tábuas (m)" ><input placeholder="Preço R$"></div>
+  <div class="item"><input placeholder="Prego (kg)"><input placeholder="Preço R$"></div>
 
-  <label>Preço do caminhão de areia (R$):</label>
-  <input type="number" id="areia" placeholder="Ex: 300" step="0.01">
+  <h2>Parte Pilar / Parede / Cinta</h2>
+  <div class="item"><input placeholder="Tijolo (milheiro)"><input placeholder="Preço R$"></div>
+  <div class="item"><input placeholder="Areia (m³)"><input placeholder="Preço R$"></div>
+  <div class="item"><input placeholder="Cimento (sacos)"><input placeholder="Preço R$"></div>
+  <div class="item"><input placeholder="Ferro 10mm (kg)"><input placeholder="Preço R$"></div>
+  <div class="item"><input placeholder="Ferro estribo (kg)"><input placeholder="Preço R$"></div>
+  <div class="item"><input placeholder="Mangueira elétrica (m)"><input placeholder="Preço R$"></div>
+  <div class="item"><input placeholder="Caixinha de energia"><input placeholder="Preço R$"></div>
+  <div class="item"><input placeholder="Caixa de distribuição"><input placeholder="Preço R$"></div>
 
-  <label>Preço do caminhão de brita (R$):</label>
-  <input type="number" id="brita" placeholder="Ex: 400" step="0.01">
+  <h2>Parte Laje</h2>
+  <div class="item"><input placeholder="Laje pré-fabricada (m²)"><input placeholder="Preço R$"></div>
 
-  <label>Preço por saco de cimento (R$):</label>
-  <input type="number" id="cimento" placeholder="Ex: 45" step="0.01">
+  <h2>Parte Telhado</h2>
+  <div class="item"><input placeholder="Madeira (m)"><input placeholder="Preço R$"></div>
+  <div class="item"><input placeholder="Telha colonial (unid)"><input placeholder="Preço R$"></div>
 
-  <label>Quantidade de sacos de cimento:</label>
-  <input type="number" id="qtdCimento" placeholder="Ex: 57">
+  <h2>Parte Gesseiro</h2>
+  <div class="item"><input placeholder="Gesso (m²)"><input placeholder="Preço R$"></div>
 
-  <label>Preço do concreto usinado por m³ (R$):</label>
-  <input type="number" id="precoUsinado" placeholder="Ex: 320" step="0.01">
+  <h2>Parte Porcelanato</h2>
+  <div class="item"><input placeholder="Porcelanato (m²)"><input placeholder="Preço R$"></div>
+  <div class="item"><input placeholder="Argamassa (sacos)"><input placeholder="Preço R$"></div>
+  <div class="item"><input placeholder="Rejunte (kg)"><input placeholder="Preço R$"></div>
 
-  <button onclick="calcular()">Calcular</button>
-
-  <div id="resultado"></div>
-
-  <script>
-    function calcular() {
-      const precoAreia = parseFloat(document.getElementById('areia').value);
-      const precoBrita = parseFloat(document.getElementById('brita').value);
-      const precoCimento = parseFloat(document.getElementById('cimento').value);
-      const qtdCimento = parseFloat(document.getElementById('qtdCimento').value);
-      const precoUsinado = parseFloat(document.getElementById('precoUsinado').value);
-
-      if ([precoAreia, precoBrita, precoCimento, qtdCimento, precoUsinado].some(isNaN)) {
-        document.getElementById('resultado').innerText = '⚠️ Preencha todos os campos corretamente.';
-        return;
-      }
-
-      // Total gasto com materiais separados
-      const totalMateriais = precoAreia + precoBrita + (precoCimento * qtdCimento);
-
-      // Calcular volume de cimento em m³
-      const volumeCimento = qtdCimento * 0.035; // 1 saco ≈ 0.035 m³
-
-      // Aplicar proporção 1:2:3 (cimento : areia : brita)
-      const volumeTotalConcreto = volumeCimento + (volumeCimento * 2) + (volumeCimento * 3);
-
-      // Custo do usinado para o mesmo volume
-      const custoUsinado = volumeTotalConcreto * precoUsinado;
-
-      // Comparação
-      const economia = custoUsinado - totalMateriais;
-      const vantagem = economia > 0 ? '✅ Compensa mais: Fazer com materiais' : '✅ Compensa mais: Comprar usinado';
-
-      document.getElementById('resultado').innerHTML = `
-        <strong>🔢 Resultado:</strong><br>
-        Volume estimado de concreto: <strong>${volumeTotalConcreto.toFixed(2)} m³</strong><br>
-        Custo com materiais: <strong>R$ ${totalMateriais.toFixed(2)}</strong><br>
-        Custo usinado: <strong>R$ ${custoUsinado.toFixed(2)}</strong><br><br>
-        ${vantagem}<br>
-        Diferença: R$ ${Math.abs(economia).toFixed(2)}
-      `;
-    }
-  </script>
-
+  <div class="total">Total geral: R$ <span id="total">0,00</span></div>
 </body>
 </html>
