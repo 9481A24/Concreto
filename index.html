@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulador de Concreto</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+      background: #f4f4f4;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.15);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    #resultado {
+      margin-top: 20px;
+      background: #e7ffe7;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #8f8;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🔧 Simulador de Concreto</h2>
+
+  <label>Preço do caminhão de areia (R$):</label>
+  <input type="number" id="areia" placeholder="Ex: 300" step="0.01">
+
+  <label>Preço do caminhão de brita (R$):</label>
+  <input type="number" id="brita" placeholder="Ex: 400" step="0.01">
+
+  <label>Preço por saco de cimento (R$):</label>
+  <input type="number" id="cimento" placeholder="Ex: 45" step="0.01">
+
+  <label>Quantidade de sacos de cimento:</label>
+  <input type="number" id="qtdCimento" placeholder="Ex: 57">
+
+  <label>Preço do concreto usinado por m³ (R$):</label>
+  <input type="number" id="precoUsinado" placeholder="Ex: 320" step="0.01">
+
+  <button onclick="calcular()">Calcular</button>
+
+  <div id="resultado"></div>
+
+  <script>
+    function calcular() {
+      const precoAreia = parseFloat(document.getElementById('areia').value);
+      const precoBrita = parseFloat(document.getElementById('brita').value);
+      const precoCimento = parseFloat(document.getElementById('cimento').value);
+      const qtdCimento = parseFloat(document.getElementById('qtdCimento').value);
+      const precoUsinado = parseFloat(document.getElementById('precoUsinado').value);
+
+      if ([precoAreia, precoBrita, precoCimento, qtdCimento, precoUsinado].some(isNaN)) {
+        document.getElementById('resultado').innerText = '⚠️ Preencha todos os campos corretamente.';
+        return;
+      }
+
+      // Total gasto com materiais separados
+      const totalMateriais = precoAreia + precoBrita + (precoCimento * qtdCimento);
+
+      // Calcular volume de cimento em m³
+      const volumeCimento = qtdCimento * 0.035; // 1 saco ≈ 0.035 m³
+
+      // Aplicar proporção 1:2:3 (cimento : areia : brita)
+      const volumeTotalConcreto = volumeCimento + (volumeCimento * 2) + (volumeCimento * 3);
+
+      // Custo do usinado para o mesmo volume
+      const custoUsinado = volumeTotalConcreto * precoUsinado;
+
+      // Comparação
+      const economia = custoUsinado - totalMateriais;
+      const vantagem = economia > 0 ? '✅ Compensa mais: Fazer com materiais' : '✅ Compensa mais: Comprar usinado';
+
+      document.getElementById('resultado').innerHTML = `
+        <strong>🔢 Resultado:</strong><br>
+        Volume estimado de concreto: <strong>${volumeTotalConcreto.toFixed(2)} m³</strong><br>
+        Custo com materiais: <strong>R$ ${totalMateriais.toFixed(2)}</strong><br>
+        Custo usinado: <strong>R$ ${custoUsinado.toFixed(2)}</strong><br><br>
+        ${vantagem}<br>
+        Diferença: R$ ${Math.abs(economia).toFixed(2)}
+      `;
+    }
+  </script>
+
+</body>
+</html>
